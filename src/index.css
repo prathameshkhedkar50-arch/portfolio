@@ -2,74 +2,384 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================
+   PHASE 3D.13 – UNIFIED INTERACTION SYSTEM
+   ============================================ */
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
 @layer base {
   html {
     @apply scroll-smooth;
   }
+
   body {
     @apply font-inter antialiased overflow-x-hidden bg-light-bg dark:bg-dark-bg text-gray-800 dark:text-gray-100 transition-colors duration-300;
   }
-  h1, h2, h3, h4, h5, h6 {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-poppins font-semibold;
   }
-  
-  /* Text Selection */
+
   ::selection {
     @apply bg-primary/30 text-primary dark:bg-primary/40 dark:text-white;
   }
 
-  /* Custom Scrollbar */
   ::-webkit-scrollbar {
     @apply w-2;
   }
+
   ::-webkit-scrollbar-track {
     @apply bg-gray-100 dark:bg-dark-bg;
   }
+
   ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-primary dark:hover:bg-primary transition-colors;
+    @apply bg-gray-300 dark:bg-gray-700 rounded-full hover:bg-primary transition-colors;
   }
 }
 
+/* ============================================
+   COMPONENT UTILITIES
+   ============================================ */
+
 @layer components {
-  /* Container & Spacing */
   .container-custom {
     @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
+
   .section-padding {
     @apply py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8;
   }
 
-  /* Glassmorphism */
   .glass {
     @apply bg-white/70 dark:bg-dark-surface/70 backdrop-blur-md border border-gray-200/50 dark:border-white/10 shadow-sm;
   }
+
+  /* ============================================
+     UNIFIED CARD DEPTH SYSTEM (Phase 3D.13)
+     ============================================ */
+
+  /* Level 1: Normal card – subtle border + small shadow */
+  .card-base {
+    @apply bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-gray-200 dark:border-gray-700 shadow-sm;
+  }
+
+  /* Level 2: Hovered card – stronger shadow + subtle tint */
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover:hover {
+    @apply -translate-y-1 shadow-lg shadow-primary/5 dark:shadow-primary/10 border-gray-300/70 dark:border-gray-600/70;
+  }
+
+  /* Level 3: Important CTA card – stronger depth */
+  .card-cta {
+    @apply shadow-md shadow-primary/10 dark:shadow-primary/20 border-primary/20 dark:border-primary/30;
+  }
+
+  .card-cta:hover {
+    @apply -translate-y-1.5 shadow-xl shadow-primary/20 dark:shadow-primary/30;
+  }
+
+  /* ============================================
+     UNIFIED BUTTON SYSTEM (Phase 3D.13)
+     ============================================ */
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-blue-700 text-white font-semibold rounded-xl shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/30 transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent border-2 border-primary text-primary dark:text-blue-300 hover:bg-primary/10 font-semibold rounded-xl transition-all duration-200 ease-out hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg;
+  }
+
+  .btn-icon {
+    @apply p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary;
+  }
+
+  /* ============================================
+     GLASS CARD (existing, preserved)
+     ============================================ */
+
   .glass-card {
     @apply glass rounded-2xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 dark:hover:border-primary/30;
   }
-
-  /* Buttons */
-  .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-primary/20 hover:shadow-primary/40 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg;
-  }
-  .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent border-2 border-primary text-primary dark:text-blue-300 hover:bg-primary/10 font-semibold rounded-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg;
-  }
-  .btn-icon {
-    @apply p-3 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white dark:hover:bg-primary dark:hover:text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary;
-  }
-
-  /* Animations */
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
-  }
 }
+
+/* ============================================
+   UTILITY CLASSES
+   ============================================ */
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* ============================================
+     SCROLL MARGIN FOR STICKY NAVBAR
+     ============================================ */
+
+  section[id] {
+    scroll-margin-top: 4.5rem;
+    /* 72px for mobile */
+  }
+
+  /* ============================================
+     FOCUS STATES – ACCESSIBILITY
+     ============================================ */
+
+  *:focus-visible {
+    outline: 2px solid #2563EB;
+    outline-offset: 2px;
+  }
+
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  /* ============================================
+     REDUCED MOTION – ACCESSIBILITY
+     ============================================ */
+
+  @media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+
+    /* Preserve theme transitions */
+    body,
+    .bg-white,
+    .bg-gray-100,
+    .bg-gray-800,
+    .bg-gray-900 {
+      transition-duration: 300ms !important;
+    }
+  }
+
+  /* ============================================
+     SAFE AREA PADDING FOR MOBILE
+     ============================================ */
+
+  @supports (padding: max(0px)) {
+    .container-custom {
+      padding-left: max(1rem, env(safe-area-inset-left, 1rem));
+      padding-right: max(1rem, env(safe-area-inset-right, 1rem));
+    }
+  }
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* ============================================
+   WHATSAPP IDLE PULSE (Phase 3D.13)
+   ============================================ */
+
+@keyframes whatsapp-pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 10px 15px -3px rgba(34, 197, 94, 0.3),
+      0 4px 6px -4px rgba(34, 197, 94, 0.2);
+    transform: scale(1);
+  }
+
+  50% {
+    box-shadow: 0 10px 20px -3px rgba(34, 197, 94, 0.4),
+      0 4px 10px -4px rgba(34, 197, 94, 0.3);
+    transform: scale(1.02);
+  }
+}
+
+.whatsapp-idle-pulse {
+  animation: whatsapp-pulse 3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .whatsapp-idle-pulse {
+    animation: none;
+  }
+}
+
+/* ============================================
+   NAVBAR ACTIVE LINK INDICATOR (Phase 3D.13)
+   ============================================ */
+
+.nav-link {
+  @apply relative text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary transition-colors duration-200;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-0 h-0.5 bg-primary rounded-full transition-all duration-300 ease-out;
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+  @apply w-full;
+}
+
+/* ============================================
+   THEME TOGGLE ANIMATION (Phase 3D.13)
+   ============================================ */
+
+.theme-toggle-icon {
+  @apply transition-transform duration-300 ease-out;
+}
+
+.theme-toggle-icon:hover {
+  @apply rotate-12;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle-icon:hover {
+    transform: none;
+  }
+}
+
+/* ============================================
+   UNIFIED TRANSITION TIMING (Phase 3D.13)
+   ============================================ */
+
+/* Micro interactions: 150-250ms */
+.transition-micro {
+  @apply transition-all duration-200 ease-out;
+}
+
+/* Card hover: 200-350ms */
+.transition-card {
+  @apply transition-all duration-300 ease-out;
+}
+
+/* Section entrance: 400-700ms */
+.transition-entrance {
+  @apply transition-all duration-500 ease-out;
+}
+
+/* ============================================
+   SHADOW DEPTH HIERARCHY (Phase 3D.13)
+   ============================================ */
+
+/* Subtle blue/purple tint on hover shadows */
+.shadow-depth-hover {
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.08),
+    0 4px 6px -4px rgba(147, 51, 234, 0.05);
+}
+
+.dark .shadow-depth-hover {
+  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.15),
+    0 4px 6px -4px rgba(147, 51, 234, 0.1);
+}
+
+/* ============================================
+   TIMELINE POLISH (Phase 3D.13)
+   ============================================ */
+
+.timeline-node {
+  @apply transition-all duration-300 ease-out;
+}
+
+.timeline-node:hover {
+  @apply scale-110 shadow-lg shadow-primary/30;
+}
+
+/* ============================================
+   SOCIAL BUTTON UNIFIED STYLE (Phase 3D.13)
+   ============================================ */
+
+.social-btn {
+  @apply relative flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 shadow-md transition-all duration-200 ease-out hover:-translate-y-[3px] hover:scale-[1.05] hover:shadow-lg hover:shadow-primary/20 dark:hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98];
+}
+
+.social-btn::before {
+  content: '';
+  @apply absolute inset-0 rounded-xl bg-gradient-to-b from-white/50 to-transparent dark:from-white/5 dark:to-transparent pointer-events-none;
+}
+
+.social-btn .social-icon {
+  @apply relative text-gray-600 dark:text-gray-400 transition-colors duration-200 group-hover:text-primary;
+}
+
+/* ============================================
+   STICKY NAVBAR OFFSET (Phase 3D.14)
+   ============================================ */
+section[id] {
+  scroll-margin-top: 4.5rem;
+  /* 80px offset for h-16 navbar + breathing room */
+}
+
+/* ============================================
+   HERO LEFT-SIDE 3D TYPOGRAPHY DEPTH
+   ============================================ */
+
+/* Subtle layered shadow for the main name */
+.hero-name-depth {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.05),
+    0 4px 8px rgba(0, 0, 0, 0.03);
+}
+
+.dark .hero-name-depth {
+  text-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Very subtle depth for the greeting */
+.hero-greeting-depth {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.02);
+}
+
+.dark .hero-greeting-depth {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+
+/* Subtle blue glow/depth for the typewriter title */
+.hero-title-depth {
+  text-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
+}
+
+.dark .hero-title-depth {
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+}
+
+/* Respect reduced motion for text shadows if needed */
+@media (prefers-reduced-motion: reduce) {
+
+  .hero-name-depth,
+  .hero-greeting-depth,
+  .hero-title-depth {
+    text-shadow: none;
   }
 }

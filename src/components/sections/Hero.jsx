@@ -7,16 +7,16 @@ import {
 import { portfolioData } from '../../data/portfolioData';
 import { downloadResume, scrollToSection, isVerifiedLink } from '../../utils/helpers';
 import { getGitHubRepoCount } from '../../services/githubService';
+import { DeveloperOrb } from '../common/DeveloperOrb';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
 const StatCard = ({ value, suffix, label, delay, liveFetch, fallback }) => {
   const [displayValue, setDisplayValue] = useState(fallback !== undefined ? fallback : value);
   const [isLive, setIsLive] = useState(false);
   const isNumeric = typeof value === 'number';
   
-  // Fetch live GitHub repo count
   useEffect(() => {
     if (!liveFetch) return;
-    
     let cancelled = false;
     const fetchCount = async () => {
       try {
@@ -27,22 +27,11 @@ const StatCard = ({ value, suffix, label, delay, liveFetch, fallback }) => {
         }
       } catch (error) {
         console.warn('GitHub count fetch failed:', error);
-        // Keep fallback value
-        if (!cancelled && fallback) {
-          setDisplayValue(fallback);
-        }
+        if (!cancelled && fallback) setDisplayValue(fallback);
       }
     };
-    
-    // Fetch after a small delay to avoid blocking initial render
-    const timer = setTimeout(() => {
-      fetchCount();
-    }, 500);
-    
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
+    const timer = setTimeout(() => { fetchCount(); }, 500);
+    return () => { cancelled = true; clearTimeout(timer); };
   }, [liveFetch, fallback]);
 
   const finalValue = isNumeric ? `${displayValue}${suffix}` : displayValue;
@@ -60,11 +49,7 @@ const StatCard = ({ value, suffix, label, delay, liveFetch, fallback }) => {
       {isLive && (
         <span className="absolute top-2 right-2 w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live data" aria-hidden="true" />
       )}
-      <div className={`font-bold font-poppins text-primary mb-2 sm:mb-3 text-center leading-tight ${
-        isLongValue 
-          ? 'text-lg sm:text-xl md:text-2xl' 
-          : 'text-2xl sm:text-3xl md:text-4xl'
-      }`}>
+      <div className={`font-bold font-poppins text-primary mb-2 sm:mb-3 text-center leading-tight ${isLongValue ? 'text-lg sm:text-xl md:text-2xl' : 'text-2xl sm:text-3xl md:text-4xl'}`}>
         {finalValue}
       </div>
       <div className="text-[10px] sm:text-xs md:text-sm text-gray-600 dark:text-gray-400 font-medium uppercase tracking-wide text-center leading-tight px-1">
@@ -79,12 +64,12 @@ export default function Hero() {
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const currentRole = hero.roles[roleIndex];
     const typingSpeed = isDeleting ? 50 : 100;
     const pauseTime = 2000;
-
     const timer = setTimeout(() => {
       if (!isDeleting && displayedText === currentRole) {
         setTimeout(() => setIsDeleting(true), pauseTime);
@@ -92,12 +77,9 @@ export default function Hero() {
         setIsDeleting(false);
         setRoleIndex((prev) => (prev + 1) % hero.roles.length);
       } else {
-        setDisplayedText((prev) => 
-          isDeleting ? currentRole.substring(0, prev.length - 1) : currentRole.substring(0, prev.length + 1)
-        );
+        setDisplayedText((prev) => isDeleting ? currentRole.substring(0, prev.length - 1) : currentRole.substring(0, prev.length + 1));
       }
     }, isDeleting && displayedText === currentRole ? pauseTime : typingSpeed);
-
     return () => clearTimeout(timer);
   }, [displayedText, isDeleting, roleIndex, hero.roles]);
 
@@ -114,8 +96,37 @@ export default function Hero() {
     FiPhone: <FiPhone size={20} />
   };
 
-  // Filter to only verified social links
   const verifiedSocials = hero.socials.filter((s) => isVerifiedLink(s.url, s.verified));
+
+  // Staggered entrance variants for left content
+  const containerVariants = {
+    hidden: {},
+    visible: { 
+      transition: { 
+        staggerChildren: prefersReducedMotion ? 0 : 0.08, 
+        delayChildren: prefersReducedMotion ? 0 : 0.2 
+      } 
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.6, ease: "easeOut" } 
+    }
+  };
+
+  const nameVariants = {
+    hidden: { opacity: 0, y: 25, scale: 0.98 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1, 
+      transition: { duration: 0.7, ease: "easeOut" } 
+    }
+  };
 
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
@@ -134,151 +145,135 @@ export default function Hero() {
       </div>
 
       <div className="container-custom relative z-10 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center py-12">
+        {/* LEFT CONTENT - Enhanced with 3D depth and stagger */}
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
-          className="text-center lg:text-left space-y-6"
+          className="text-center lg:text-left"
         >
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-primary font-mono font-medium text-base sm:text-lg"
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-6"
           >
-            {hero.greeting}
-          </motion.p>
-          
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold font-poppins text-gray-900 dark:text-white leading-tight"
-          >
-            {hero.name}
-          </motion.h1>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-600 dark:text-gray-300 h-10 sm:h-12 flex items-center justify-center lg:justify-start gap-1"
-          >
-            <span className="text-primary">{displayedText}</span>
-            <span className="animate-pulse text-primary">|</span>
-          </motion.div>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed"
-          >
-            {hero.summary}
-          </motion.p>
-
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
-          >
-            <button 
-              onClick={() => handleCtaClick('downloadResume')} 
-              className="btn-primary group h-12 px-6"
-              aria-label="Download Resume"
+            {/* Greeting */}
+            <motion.p 
+              variants={itemVariants}
+              className="text-primary font-mono font-medium text-base sm:text-lg hero-greeting-depth"
             >
-              <FiDownload className="group-hover:animate-bounce" aria-hidden="true" />
-              <span className="font-medium">Download Resume</span>
-            </button>
-            <button 
-              onClick={() => handleCtaClick('scrollToProjects')} 
-              className="btn-secondary group h-12 px-6"
-              aria-label="View Projects"
+              {hero.greeting}
+            </motion.p>
+            
+            {/* Main Name - Premium Typography Depth */}
+            <motion.h1 
+              variants={nameVariants}
+              whileHover={prefersReducedMotion ? {} : { y: -2, scale: 1.005 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold font-poppins text-gray-900 dark:text-white leading-tight hero-name-depth cursor-default"
             >
-              <span className="font-medium">View Projects</span>
-              <FiArrowRight className="group-hover:translate-x-1 transition-transform" aria-hidden="true" />
-            </button>
-          </motion.div>
-
-          {verifiedSocials.length > 0 && (
+              {hero.name}
+            </motion.h1>
+            
+            {/* Typewriter Title */}
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.7 }}
-              className="flex items-center justify-center lg:justify-start gap-3 flex-wrap"
+              variants={itemVariants}
+              className="text-xl sm:text-2xl lg:text-3xl font-semibold text-gray-600 dark:text-gray-300 h-10 sm:h-12 flex items-center justify-center lg:justify-start gap-1"
             >
-              {verifiedSocials.map((social, index) => {
-                const isExternal = social.url.startsWith('http');
-                return (
-                  <a
-                    key={index}
-                    href={social.url}
-                    target={isExternal ? "_blank" : "_self"}
-                    rel={isExternal ? "noopener noreferrer" : undefined}
-                    className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-primary"
-                    aria-label={`Visit Prathamesh Khedkar's ${social.name} profile`}
-                    title={social.name}
-                  >
-                    {socialIcons[social.icon]}
-                  </a>
-                );
-              })}
+              <span className="text-primary hero-title-depth">{displayedText}</span>
+              <span className="animate-pulse text-primary">|</span>
             </motion.div>
-          )}
+            
+            {/* Description */}
+            <motion.p 
+              variants={itemVariants}
+              className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-xl mx-auto lg:mx-0 leading-relaxed"
+            >
+              {hero.summary}
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div 
+              variants={itemVariants}
+              className="flex flex-wrap items-center justify-center lg:justify-start gap-4"
+            >
+              <motion.button 
+                onClick={() => handleCtaClick('downloadResume')} 
+                whileHover={prefersReducedMotion ? {} : { y: -3, scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-primary group h-12 px-6"
+                aria-label="Download Resume"
+              >
+                <FiDownload className="group-hover:animate-bounce" aria-hidden="true" />
+                <span className="font-medium">Download Resume</span>
+              </motion.button>
+              
+              <motion.button 
+                onClick={() => handleCtaClick('scrollToProjects')} 
+                whileHover={prefersReducedMotion ? {} : { y: -3, scale: 1.01 }}
+                whileTap={{ scale: 0.98 }}
+                className="btn-secondary group h-12 px-6"
+                aria-label="View Projects"
+              >
+                <span className="font-medium">View Projects</span>
+                <motion.span
+                  className="inline-block"
+                  whileHover={{ x: 3 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                >
+                  <FiArrowRight className="group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                </motion.span>
+              </motion.button>
+            </motion.div>
+
+            {/* Social Icons */}
+            {verifiedSocials.length > 0 && (
+              <motion.div 
+                variants={itemVariants}
+                className="flex items-center justify-center lg:justify-start gap-3 flex-wrap"
+              >
+                {verifiedSocials.map((social, index) => {
+                  const isExternal = social.url.startsWith('http');
+                  return (
+                    <motion.a 
+                      key={index} 
+                      href={social.url} 
+                      target={isExternal ? "_blank" : "_self"} 
+                      rel={isExternal ? "noopener noreferrer" : undefined} 
+                      whileHover={prefersReducedMotion ? {} : { y: -3, scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="w-12 h-12 rounded-xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:bg-primary hover:text-white shadow-sm hover:shadow-md transition-colors duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-900"
+                      aria-label={`Visit Prathamesh Khedkar's ${social.name} profile`} 
+                      title={social.name}
+                    >
+                      {socialIcons[social.icon]}
+                    </motion.a>
+                  );
+                })}
+              </motion.div>
+            )}
+          </motion.div>
         </motion.div>
 
+        {/* RIGHT CONTENT - Preserved exactly as is */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
           className="relative flex flex-col items-center"
         >
-          <div className="relative mb-8 sm:mb-12">
-            <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute -inset-1 bg-gradient-to-r from-primary via-secondary to-accent rounded-full opacity-70 blur-sm"
-            />
-            <div className="relative w-64 h-64 sm:w-72 sm:h-72 rounded-full overflow-hidden border-4 border-white dark:border-dark-surface shadow-2xl bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
-              <div className="text-primary">
-                <FiCode size={80} aria-hidden="true" />
-              </div>
-            </div>
-            
-            <motion.div 
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute -top-4 -right-4 glass px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg"
-            >
-              <FiLayers className="text-primary" size={16} aria-hidden="true" />
-              <span className="font-mono text-xs sm:text-sm font-semibold whitespace-nowrap">Full Stack</span>
-            </motion.div>
-            <motion.div 
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-              className="absolute -bottom-4 -left-4 glass px-3 sm:px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg"
-            >
-              <FiDatabase className="text-secondary" size={16} aria-hidden="true" />
-              <span className="font-mono text-xs sm:text-sm font-semibold whitespace-nowrap">Backend</span>
-            </motion.div>
+          <div className="mb-8 sm:mb-12">
+            <DeveloperOrb />
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 w-full max-w-3xl">
             {hero.stats.map((stat, index) => (
-              <StatCard
-                key={index}
-                value={stat.value}
-                suffix={stat.suffix}
-                label={stat.label}
-                delay={index * 0.1 + 0.5}
-                liveFetch={stat.liveFetch}
-                fallback={stat.fallback}
-              />
+              <StatCard key={index} value={stat.value} suffix={stat.suffix} label={stat.label} delay={index * 0.1 + 0.5} liveFetch={stat.liveFetch} fallback={stat.fallback} />
             ))}
           </div>
 
-          {/* Mobile Scroll Down Indicator (Centered, below stats, hidden on desktop) */}
+          {/* Mobile Scroll Down Indicator */}
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -304,7 +299,7 @@ export default function Hero() {
         </motion.div>
       </div>
 
-      {/* Desktop Scroll Down Indicator (Absolute, hidden on mobile) */}
+      {/* Desktop Scroll Down Indicator */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

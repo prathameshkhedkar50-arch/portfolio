@@ -28,41 +28,41 @@ export const portfolioData = {
     {
       id: "res-01",
       title: "Java Full Stack Developer Resume",
-      filename: "resume-fullstack.pdf",
-      targetRole: "Java Full Stack Developer",
-      description: "Highlights expertise in Java, Spring Boot, React, and full-stack development with real-world project experience.",
+      file: "/resume-fullstack.pdf",
+      description: "Comprehensive resume highlighting Java, Spring Boot, React, and full-stack development experience.",
+      tags: ["Java", "Spring Boot", "React", "REST APIs", "SQL"],
       isDefault: true,
     },
     {
       id: "res-02",
       title: "Java Developer Resume",
-      filename: "resume-java.pdf",
-      targetRole: "Java Developer",
-      description: "Focuses on core Java, Spring Boot, Hibernate, and backend development with SQL databases.",
+      file: "/resume-java.pdf",
+      description: "Focused on core Java, Spring ecosystem, and backend development expertise.",
+      tags: ["Java", "Spring Boot", "Hibernate", "MySQL"],
       isDefault: false,
     },
     {
       id: "res-03",
       title: "Backend Developer Resume",
-      filename: "resume-backend.pdf",
-      targetRole: "Backend Developer",
-      description: "Focuses on Java, Python, REST APIs, database design, and server-side architecture.",
+      file: "/resume-backend.pdf",
+      description: "Emphasizes server-side development, APIs, databases, and system architecture.",
+      tags: ["Java", "Python", "REST APIs", "PostgreSQL", "Docker"],
       isDefault: false,
     },
     {
       id: "res-04",
       title: "Python Developer Resume",
-      filename: "resume-python.pdf",
-      targetRole: "Python Developer",
-      description: "Showcases Python, FastAPI, Flask, AI integrations, and backend automation projects.",
+      file: "/resume-python.pdf",
+      description: "Highlights Python, FastAPI, automation, and data-focused development.",
+      tags: ["Python", "FastAPI", "Flask", "SQL", "Automation"],
       isDefault: false,
     },
     {
       id: "res-05",
       title: "Technology Apprentice Resume",
-      filename: "resume-apprentice.pdf",
-      targetRole: "Technology Apprentice",
-      description: "Emphasizes learning agility, academic foundation, and hands-on project work.",
+      file: "/resume-apprentice.pdf",
+      description: "Entry-level resume emphasizing learning agility, academic foundation, and project experience.",
+      tags: ["Java", "Python", "SQL", "Git", "Problem Solving"],
       isDefault: false,
     },
   ],
@@ -453,18 +453,19 @@ export const portfolioData = {
   },
   certifications: {
     title: "Certifications",
-    subtitle: "Professional credentials",
-    description: "Verified certifications demonstrating continuous learning and technical excellence.",
+    subtitle: "Professional Credentials",
+    description: "Certifications and credentials earned through professional development.",
     items: [
       {
         id: "cert-01",
-        title: "Claude Code in Action",
-        provider: "Anthropic Academy",
-        completionDate: "March 2026",
+        name: "Claude Code in Action",
+        issuer: "Anthropic Academy",
+        date: "March 2026",
         description: "Hands-on certification covering practical application of Claude AI for code generation, review, debugging, and developer productivity workflows.",
         credentialUrl: "#",
         icon: "FiAward",
-        featured: true
+        featured: true,
+        skills: ["AI", "Developer Productivity", "Code Review"]
       }
     ]
   },
@@ -528,4 +529,11 @@ export const portfolioData = {
     title: "Prathamesh Khedkar | Software Developer",
     description: "Professional portfolio of Prathamesh Khedkar, specializing in Java, Python, Spring Boot, and Backend Development.",
   },
+};
+
+/**
+ * Helper to get the default resume (used by Navbar and Hero)
+ */
+export const getDefaultResume = () => {
+  return portfolioData.resumeVariants.find(r => r.isDefault) || portfolioData.resumeVariants[0];
 };

@@ -19,7 +19,6 @@ const iconMap = {
   FiInstagram: <FiInstagram size={22} />
 };
 
-// Filter to only verified links
 const getVerifiedInfoCards = (cards) => cards.filter((c) => isVerifiedLink(c.href, c.verified));
 const getVerifiedSocials = (socials) => socials.filter((s) => isVerifiedLink(s.url, s.verified));
 
@@ -33,7 +32,6 @@ export default function Contact() {
   const [status, setStatus] = useState({ type: '', message: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Auto-dismiss success message after 6 seconds
   useEffect(() => {
     if (status.type === 'success') {
       const timer = setTimeout(() => setStatus({ type: '', message: '' }), 6000);
@@ -75,7 +73,6 @@ export default function Contact() {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-    // Clear error for this field on change
     if (errors[name]) {
       setErrors((prev) => {
         const next = { ...prev };
@@ -88,11 +85,9 @@ export default function Contact() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Prevent duplicate submissions
     if (isSubmitting) return;
     
     if (!validate()) {
-      // Focus first invalid field
       const firstErrorField = Object.keys(errors)[0];
       const el = document.getElementById(firstErrorField);
       if (el) el.focus();
@@ -103,7 +98,6 @@ export default function Contact() {
     setStatus({ type: '', message: '' });
 
     try {
-      // Create a FormData-like object for EmailJS
       const formDataObj = new FormData();
       formDataObj.append('user_name', formData.name);
       formDataObj.append('user_email', formData.email);
@@ -129,7 +123,6 @@ export default function Contact() {
       });
     } finally {
       setIsSubmitting(false);
-      // Return focus to submit button for keyboard users
       if (submitButtonRef.current) {
         submitButtonRef.current.focus();
       }
@@ -148,13 +141,12 @@ export default function Contact() {
           description={contact.description}
         />
 
-        {/* Info Cards - exactly 4 cards: Location, WhatsApp, Instagram, LinkedIn */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        {/* Info Cards - 4 cards: Location, WhatsApp, Instagram, LinkedIn */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-12">
           {verifiedInfoCards.map((info, index) => {
             const InfoIcon = iconMap[info.icon] || <FiMail />;
             const isExternal = info.href.startsWith('http') && !info.href.includes('wa.me');
             const isMap = info.isMapLink;
-            
             return (
               <motion.a
                 key={info.label}
@@ -166,7 +158,7 @@ export default function Contact() {
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="glass-card group flex items-center gap-4 p-5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
+                className="glass-card group flex items-center gap-3 sm:gap-4 p-4 sm:p-5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
                 aria-label={
                   info.label === "Instagram" 
                     ? "Visit Prathamesh Khedkar's Instagram profile" 
@@ -179,10 +171,10 @@ export default function Contact() {
                   {InfoIcon}
                 </div>
                 <div className="min-w-0 flex-grow">
-                  <p className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">
+                  <p className="text-[10px] sm:text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-0.5">
                     {info.label}
                   </p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
+                  <p className="text-xs sm:text-sm font-semibold text-gray-900 dark:text-white truncate">
                     {info.value}
                   </p>
                 </div>
@@ -191,16 +183,18 @@ export default function Contact() {
           })}
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-8">
-          {/* Contact Form */}
+        {/* Main Content: Form + Social/Map */}
+        {/* items-stretch is default for CSS grid, so both columns stretch to equal height */}
+        <div className="grid lg:grid-cols-5 gap-6 lg:gap-8 items-stretch">
+          {/* LEFT: Contact Form - stretches to match right column height */}
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="lg:col-span-3"
+            className="lg:col-span-3 h-full"
           >
-            <div className="glass-card p-6 md:p-8">
+            <div className="glass-card p-6 md:p-8 h-full flex flex-col">
               <h3 className="text-xl font-bold font-poppins text-gray-900 dark:text-white mb-2">
                 Send me a message
               </h3>
@@ -242,150 +236,156 @@ export default function Contact() {
                 )}
               </AnimatePresence>
 
-              <form ref={formRef} onSubmit={handleSubmit} className="space-y-5" noValidate>
-                <div className="grid sm:grid-cols-2 gap-5">
+              {/* Form stretches to fill available space, button stays at bottom */}
+              <form ref={formRef} onSubmit={handleSubmit} className="space-y-4 lg:space-y-5 flex-1 flex flex-col justify-between" noValidate>
+                <div className="space-y-4 lg:space-y-5 flex-1">
+                  <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
+                    <div>
+                      <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Full Name <span className="text-red-500" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        autoComplete="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        disabled={isSubmitting}
+                        placeholder={contact.form.namePlaceholder}
+                        maxLength={50}
+                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
+                          errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
+                        } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed`}
+                        aria-invalid={!!errors.name}
+                        aria-describedby={errors.name ? 'name-error' : undefined}
+                      />
+                      {errors.name && (
+                        <p id="name-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
+                          <FiAlertCircle size={12} /> {errors.name}
+                        </p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Email Address <span className="text-red-500" aria-hidden="true">*</span>
+                      </label>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        autoComplete="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        disabled={isSubmitting}
+                        placeholder={contact.form.emailPlaceholder}
+                        className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
+                          errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
+                        } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed`}
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? 'email-error' : undefined}
+                      />
+                      {errors.email && (
+                        <p id="email-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
+                          <FiAlertCircle size={12} /> {errors.email}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Full Name <span className="text-red-500" aria-hidden="true">*</span>
+                    <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Subject <span className="text-red-500" aria-hidden="true">*</span>
                     </label>
                     <input
-                      id="name"
-                      name="name"
+                      id="subject"
+                      name="subject"
                       type="text"
-                      autoComplete="name"
-                      value={formData.name}
+                      value={formData.subject}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      placeholder={contact.form.namePlaceholder}
-                      maxLength={50}
+                      placeholder={contact.form.subjectPlaceholder}
+                      maxLength={100}
                       className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
-                        errors.name ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
+                        errors.subject ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
                       } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed`}
-                      aria-invalid={!!errors.name}
-                      aria-describedby={errors.name ? 'name-error' : undefined}
+                      aria-invalid={!!errors.subject}
+                      aria-describedby={errors.subject ? 'subject-error' : undefined}
                     />
-                    {errors.name && (
-                      <p id="name-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
-                        <FiAlertCircle size={12} /> {errors.name}
+                    {errors.subject && (
+                      <p id="subject-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
+                        <FiAlertCircle size={12} /> {errors.subject}
                       </p>
                     )}
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                      Email Address <span className="text-red-500" aria-hidden="true">*</span>
+                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      Message <span className="text-red-500" aria-hidden="true">*</span>
                     </label>
-                    <input
-                      id="email"
-                      name="email"
-                      type="email"
-                      autoComplete="email"
-                      value={formData.email}
+                    <textarea
+                      id="message"
+                      name="message"
+                      rows="5"
+                      value={formData.message}
                       onChange={handleChange}
                       disabled={isSubmitting}
-                      placeholder={contact.form.emailPlaceholder}
+                      placeholder={contact.form.messagePlaceholder}
+                      maxLength={1000}
                       className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
-                        errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
-                      } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed`}
-                      aria-invalid={!!errors.email}
-                      aria-describedby={errors.email ? 'email-error' : undefined}
+                        errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
+                      } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed`}
+                      aria-invalid={!!errors.message}
+                      aria-describedby={errors.message ? 'message-error' : undefined}
                     />
-                    {errors.email && (
-                      <p id="email-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
-                        <FiAlertCircle size={12} /> {errors.email}
-                      </p>
-                    )}
+                    <div className="flex justify-between items-center mt-1">
+                      {errors.message ? (
+                        <p id="message-error" className="text-xs text-red-500 flex items-center gap-1" role="alert">
+                          <FiAlertCircle size={12} /> {errors.message}
+                        </p>
+                      ) : (
+                        <span />
+                      )}
+                      <span className="text-xs text-gray-500 dark:text-gray-500 tabular-nums">
+                        {formData.message.length}/1000
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Subject <span className="text-red-500" aria-hidden="true">*</span>
-                  </label>
-                  <input
-                    id="subject"
-                    name="subject"
-                    type="text"
-                    value={formData.subject}
-                    onChange={handleChange}
+                {/* Button area - pushed to bottom via flex layout */}
+                <div className="mt-auto pt-4">
+                  <button
+                    ref={submitButtonRef}
+                    type="submit"
                     disabled={isSubmitting}
-                    placeholder={contact.form.subjectPlaceholder}
-                    maxLength={100}
-                    className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
-                      errors.subject ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
-                    } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all disabled:opacity-60 disabled:cursor-not-allowed`}
-                    aria-invalid={!!errors.subject}
-                    aria-describedby={errors.subject ? 'subject-error' : undefined}
-                  />
-                  {errors.subject && (
-                    <p id="subject-error" className="text-xs text-red-500 mt-1 flex items-center gap-1" role="alert">
-                      <FiAlertCircle size={12} /> {errors.subject}
+                    className="btn-primary w-full justify-center disabled:opacity-70 disabled:cursor-not-allowed focus:ring-offset-2 dark:focus:ring-offset-dark-bg h-12"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <FiLoader className="animate-spin" aria-hidden="true" /> 
+                        <span>{contact.form.sendingLabel}</span>
+                      </>
+                    ) : (
+                      <>
+                        <FiSend aria-hidden="true" /> 
+                        <span>{contact.form.submitLabel}</span>
+                      </>
+                    )}
+                  </button>
+
+                  {!contact.form.emailjsConfigured && (
+                    <p className="text-xs text-center text-gray-500 dark:text-gray-500 mt-2">
+                      Email service not configured. Set environment variables to enable direct messaging.
                     </p>
                   )}
                 </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Message <span className="text-red-500" aria-hidden="true">*</span>
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows="5"
-                    value={formData.message}
-                    onChange={handleChange}
-                    disabled={isSubmitting}
-                    placeholder={contact.form.messagePlaceholder}
-                    maxLength={1000}
-                    className={`w-full px-4 py-3 rounded-xl bg-gray-50 dark:bg-dark-surface border ${
-                      errors.message ? 'border-red-500 focus:ring-red-500' : 'border-gray-200 dark:border-white/10 focus:ring-primary'
-                    } text-gray-900 dark:text-white focus:ring-2 focus:border-transparent outline-none transition-all resize-none disabled:opacity-60 disabled:cursor-not-allowed`}
-                    aria-invalid={!!errors.message}
-                    aria-describedby={errors.message ? 'message-error' : undefined}
-                  />
-                  <div className="flex justify-between items-center mt-1">
-                    {errors.message ? (
-                      <p id="message-error" className="text-xs text-red-500 flex items-center gap-1" role="alert">
-                        <FiAlertCircle size={12} /> {errors.message}
-                      </p>
-                    ) : (
-                      <span />
-                    )}
-                    <span className="text-xs text-gray-500 dark:text-gray-500 tabular-nums">
-                      {formData.message.length}/1000
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  ref={submitButtonRef}
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="btn-primary w-full justify-center disabled:opacity-70 disabled:cursor-not-allowed focus:ring-offset-2 dark:focus:ring-offset-dark-bg h-12"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <FiLoader className="animate-spin" aria-hidden="true" /> 
-                      <span>{contact.form.sendingLabel}</span>
-                    </>
-                  ) : (
-                    <>
-                      <FiSend aria-hidden="true" /> 
-                      <span>{contact.form.submitLabel}</span>
-                    </>
-                  )}
-                </button>
-
-                {!contact.form.emailjsConfigured && (
-                  <p className="text-xs text-center text-gray-500 dark:text-gray-500 mt-2">
-                    Email service not configured. Set environment variables to enable direct messaging.
-                  </p>
-                )}
               </form>
             </div>
           </motion.div>
 
-          {/* Right Column: Social + Map */}
+          {/* RIGHT: Social + Map - unchanged */}
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -393,7 +393,7 @@ export default function Contact() {
             transition={{ duration: 0.5 }}
             className="lg:col-span-2 space-y-6"
           >
-            {/* Social Links - only verified */}
+            {/* Social Links */}
             <div className="glass-card p-6">
               <h3 className="text-lg font-bold font-poppins text-gray-900 dark:text-white mb-4">
                 Connect with me
@@ -446,15 +446,12 @@ export default function Contact() {
                   referrerPolicy="no-referrer-when-downgrade"
                   className="absolute inset-0 z-10"
                 />
-                {/* Graceful fallback background if iframe is blocked by ad-blockers */}
                 <div className="absolute inset-0 z-0 flex items-center justify-center bg-gray-100 dark:bg-gray-800">
                    <span className="text-sm text-gray-500 dark:text-gray-400 flex items-center gap-2">
                      <FiMapPin /> Loading map...
                    </span>
                 </div>
               </div>
-              
-              {/* Prominent, unblocked external link button */}
               <a
                 href={APP_CONFIG.contact.locationMapUrl}
                 target="_blank"

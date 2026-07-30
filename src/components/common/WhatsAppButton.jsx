@@ -1,31 +1,36 @@
 import { motion } from 'framer-motion';
-import { FaWhatsapp } from 'react-icons/fa';
-import { portfolioData } from '../../data/portfolioData';
+import { FiMessageCircle } from 'react-icons/fi';
+import { APP_CONFIG } from '../../config';
+import { useReducedMotion } from '../../hooks/useReducedMotion';
 
+/**
+ * Floating WhatsApp Button
+ * 
+ * Fixed position button for quick WhatsApp contact.
+ * Positioned bottom-right with safe offsets.
+ * Accessible with proper aria-label.
+ * Phase 3D.13: Added subtle idle pulse animation.
+ */
 export default function WhatsAppButton() {
-  const phone = portfolioData.personal.contact.phone.replace(/\D/g, '');
-  const message = encodeURIComponent("Hello Prathamesh,\n\nI found your portfolio and would like to discuss an opportunity.");
-  const whatsappUrl = `https://wa.me/${phone}?text=${message}`;
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.a
-      href={whatsappUrl}
+      href={APP_CONFIG.social.whatsapp}
       target="_blank"
       rel="noopener noreferrer"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ delay: 1, type: "spring", stiffness: 200 }}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
-      className="fixed bottom-6 right-6 z-50 group"
-      aria-label="Contact on WhatsApp"
+      aria-label="Chat on WhatsApp"
+      className={`fixed z-40 p-4 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-200 ease-out hover:scale-105 active:scale-95 ${
+        !prefersReducedMotion ? 'whatsapp-idle-pulse' : ''
+      }`}
+      style={{
+        bottom: 'max(1.5rem, env(safe-area-inset-bottom, 1.5rem))',
+        right: 'max(1.5rem, env(safe-area-inset-right, 1.5rem))'
+      }}
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
-      <span className="absolute right-full mr-3 top-1/2 -translate-y-1/2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs font-semibold px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap pointer-events-none">
-        Chat with me
-      </span>
-      <div className="bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg shadow-green-500/30 transition-colors duration-300 animate-float">
-        <FaWhatsapp size={28} />
-      </div>
+      <FiMessageCircle size={24} aria-hidden="true" />
     </motion.a>
   );
 }

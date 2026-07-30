@@ -2,14 +2,26 @@ import { ThemeProvider } from './context/ThemeContext';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import WhatsAppButton from './components/common/WhatsAppButton';
+import { AmbientBackground } from './components/common/AmbientBackground';
 
+// Phase 3: Hero Section
 import Hero from './components/sections/Hero';
+
+// Phase 4: About, Experience, Education Sections
 import About from './components/sections/About';
 import Experience from './components/sections/Experience';
 import Education from './components/sections/Education';
+
+// Phase 5: Skills Section
 import Skills from './components/sections/Skills';
+
+// Phase 6: Projects Section
 import Projects from './components/sections/Projects';
+
+// Phase 7: GitHub Profile Section
 import GitHubProfile from './components/sections/GitHubProfile';
+
+// Phase 8: Resume, Certifications, Contact Sections
 import Certifications from './components/sections/Certifications';
 import Resume from './components/sections/Resume';
 import Contact from './components/sections/Contact';
@@ -27,23 +39,45 @@ function App() {
           Skip to main content
         </a>
 
+        {/* Phase 3D.5: Premium Ambient Background */}
+        <AmbientBackground />
+        
+        {/* Global Navigation */}
         <Navbar />
         
-        <main id="main-content" className="flex-grow" role="main" tabIndex="-1">
+        {/* Main Content Area - z-10 ensures content sits above the ambient background */}
+        <main id="main-content" className="flex-grow relative z-10" role="main" tabIndex="-1">
+          
+          {/* Phase 3: Premium Hero Section */}
           <Hero />
+          
+          {/* Phase 4: About, Experience, Education */}
           <About />
           <Experience />
           <Education />
+          
+          {/* Phase 5: Skills Section */}
           <Skills />
+          
+          {/* Phase 6: Projects Section */}
           <Projects />
+          
+          {/* Phase 7: GitHub Profile Section */}
           <GitHubProfile />
+          
+          {/* Phase 8: Resume, Certifications, Contact */}
           <Certifications />
           <Resume />
           <Contact />
+          
         </main>
         
+        {/* Global Footer */}
         <Footer />
+        
+        {/* Floating WhatsApp Button */}
         <WhatsAppButton />
+        
       </div>
     </ThemeProvider>
   );
