@@ -1,6 +1,8 @@
 import { APP_CONFIG, isEmailJSConfigured } from '../config';
 import { isVerifiedLink } from '../utils/helpers';
 
+const baseUrl = import.meta.env.BASE_URL || '/';
+
 export const portfolioData = {
   personal: {
     name: "Prathamesh Khedkar",
@@ -28,7 +30,7 @@ export const portfolioData = {
     {
       id: "res-01",
       title: "Java Full Stack Developer Resume",
-      file: "/resume-fullstack.pdf",
+      file: `${baseUrl}resume-fullstack.pdf`,
       description: "Comprehensive resume highlighting Java, Spring Boot, React, and full-stack development experience.",
       tags: ["Java", "Spring Boot", "React", "REST APIs", "SQL"],
       isDefault: true,
@@ -36,7 +38,7 @@ export const portfolioData = {
     {
       id: "res-02",
       title: "Java Developer Resume",
-      file: "/resume-java.pdf",
+      file: `${baseUrl}resume-java.pdf`,
       description: "Focused on core Java, Spring ecosystem, and backend development expertise.",
       tags: ["Java", "Spring Boot", "Hibernate", "MySQL"],
       isDefault: false,
@@ -44,7 +46,7 @@ export const portfolioData = {
     {
       id: "res-03",
       title: "Backend Developer Resume",
-      file: "/resume-backend.pdf",
+      file: `${baseUrl}resume-backend.pdf`,
       description: "Emphasizes server-side development, APIs, databases, and system architecture.",
       tags: ["Java", "Python", "REST APIs", "PostgreSQL", "Docker"],
       isDefault: false,
@@ -52,7 +54,7 @@ export const portfolioData = {
     {
       id: "res-04",
       title: "Python Developer Resume",
-      file: "/resume-python.pdf",
+      file: `${baseUrl}resume-python.pdf`,
       description: "Highlights Python, FastAPI, automation, and data-focused development.",
       tags: ["Python", "FastAPI", "Flask", "SQL", "Automation"],
       isDefault: false,
@@ -60,7 +62,7 @@ export const portfolioData = {
     {
       id: "res-05",
       title: "Technology Apprentice Resume",
-      file: "/resume-apprentice.pdf",
+      file: `${baseUrl}resume-apprentice.pdf`,
       description: "Entry-level resume emphasizing learning agility, academic foundation, and project experience.",
       tags: ["Java", "Python", "SQL", "Git", "Problem Solving"],
       isDefault: false,
@@ -281,7 +283,7 @@ export const portfolioData = {
         tech: ["Java", "SQL", "Spring Boot"],
         github: `https://github.com/${APP_CONFIG.github.username}/vahtuk-transport-management`,
         live: null,
-        image: "/images/projects/vahtuk.jpg"
+        image: `${baseUrl}images/projects/vahtuk.jpg`
       },
       {
         id: 2,
@@ -294,7 +296,7 @@ export const portfolioData = {
         tech: ["Python", "FastAPI", "Ollama", "REST APIs"],
         github: `https://github.com/${APP_CONFIG.github.username}/ollama-code-reviewer`,
         live: "https://ollama-reviewer.vercel.app",
-        image: "/images/projects/ollama.jpg"
+        image: `${baseUrl}images/projects/ollama.jpg`
       },
       {
         id: 3,
@@ -307,7 +309,7 @@ export const portfolioData = {
         tech: ["React", "FastAPI"],
         github: `https://github.com/${APP_CONFIG.github.username}/wifishare-app`,
         live: null,
-        image: "/images/projects/wifishare.jpg"
+        image: `${baseUrl}images/projects/wifishare.jpg`
       },
       {
         id: 4,
@@ -320,7 +322,7 @@ export const portfolioData = {
         tech: ["HTML", "CSS", "JavaScript"],
         github: `https://github.com/${APP_CONFIG.github.username}/mahalaxmi-steel-arts-website`,
         live: "https://mahalaxmi-steel.vercel.app",
-        image: "/images/projects/mahalaxmi.jpg"
+        image: `${baseUrl}images/projects/mahalaxmi.jpg`
       },
       {
         id: 5,
@@ -333,7 +335,7 @@ export const portfolioData = {
         tech: ["Python", "Flask", "SQL"],
         github: `https://github.com/${APP_CONFIG.github.username}/flask-rbac-management`,
         live: null,
-        image: "/images/projects/flask-rbac.jpg"
+        image: `${baseUrl}images/projects/flask-rbac.jpg`
       },
       {
         id: 6,
@@ -346,7 +348,7 @@ export const portfolioData = {
         tech: ["Java", "Spring Boot", "MySQL"],
         github: `https://github.com/${APP_CONFIG.github.username}/springboot-template-marketplace`,
         live: null,
-        image: "/images/projects/template-market.jpg"
+        image: `${baseUrl}images/projects/template-market.jpg`
       },
       {
         id: 7,
@@ -359,7 +361,7 @@ export const portfolioData = {
         tech: ["Python", "FastAPI", "AI"],
         github: `https://github.com/${APP_CONFIG.github.username}/ai-code-reviewer`,
         live: null,
-        image: "/images/projects/ai-reviewer.jpg"
+        image: `${baseUrl}images/projects/ai-reviewer.jpg`
       },
       {
         id: 8,
@@ -372,7 +374,7 @@ export const portfolioData = {
         tech: ["HTML", "CSS", "JavaScript", "Python"],
         github: `https://github.com/${APP_CONFIG.github.username}/interview-prep-portal`,
         live: null,
-        image: "/images/projects/interview-portal.jpg"
+        image: `${baseUrl}images/projects/interview-portal.jpg`
       },
       {
         id: 9,
@@ -385,7 +387,7 @@ export const portfolioData = {
         tech: ["Python", "OS", "File System"],
         github: `https://github.com/${APP_CONFIG.github.username}/python-storage-cleanup`,
         live: null,
-        image: "/images/projects/cleanup-tool.jpg"
+        image: `${baseUrl}images/projects/cleanup-tool.jpg`
       },
       {
         id: 10,
@@ -398,7 +400,7 @@ export const portfolioData = {
         tech: ["HTML", "CSS", "JavaScript"],
         github: `https://github.com/${APP_CONFIG.github.username}/arrow-escape-puzzle`,
         live: "https://arrow-escape.vercel.app",
-        image: "/images/projects/arrow-game.jpg"
+        image: `${baseUrl}images/projects/arrow-game.jpg`
       }
     ]
   },

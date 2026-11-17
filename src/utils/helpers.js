@@ -56,7 +56,8 @@ export const isWithinLength = (str, min, max) => {
 // Check if a resume PDF exists in public/ directory
 export const checkResumeExists = async (filename) => {
   try {
-    const response = await fetch(`/${filename}`, { 
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    const response = await fetch(`${baseUrl}${filename}`, {
       method: 'HEAD',
       cache: 'no-cache'
     });
@@ -96,13 +97,15 @@ export const getActiveResume = async () => {
   return null;
 };
 
+const getBaseUrl = () => import.meta.env.BASE_URL || '/';
+
 export const openResume = async () => {
   const resume = await getActiveResume();
   if (!resume) {
     showResumeUnavailableNotification();
     return;
   }
-  window.open(`/${resume.filename}`, '_blank', 'noopener,noreferrer');
+  window.open(`${getBaseUrl()}${resume.filename}`, '_blank', 'noopener,noreferrer');
 };
 
 export const downloadResume = async () => {
@@ -111,9 +114,9 @@ export const downloadResume = async () => {
     showResumeUnavailableNotification();
     return;
   }
-  
+
   const link = document.createElement('a');
-  link.href = `/${resume.filename}`;
+  link.href = `${getBaseUrl()}${resume.filename}`;
   link.download = resume.filename;
   document.body.appendChild(link);
   link.click();
@@ -126,8 +129,8 @@ export const printResume = async () => {
     showResumeUnavailableNotification();
     return;
   }
-  
-  const printWindow = window.open(`/${resume.filename}`, '_blank', 'noopener,noreferrer');
+
+  const printWindow = window.open(`${getBaseUrl()}${resume.filename}`, '_blank', 'noopener,noreferrer');
   if (printWindow) {
     printWindow.onload = () => {
       setTimeout(() => printWindow.print(), 500);
